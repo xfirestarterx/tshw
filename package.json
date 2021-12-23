@@ -1,0 +1,24 @@
+{
+  "name": "tshw",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "parcel serve index.html --no-cache"
+  },
+  "repository": {
+    "type": "git",
+    "url": "\"\""
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/core": "^7.14.8",
+    "@babel/plugin-transform-runtime": "^7.14.5",
+    "@babel/preset-env": "^7.14.8",
+    "@babel/preset-typescript": "^7.16.0",
+    "babel-preset-env": "^1.7.0",
+    "parcel": "^2.0.0-rc.0",
+    "typescript": "^4.3.5"
+  }
+}

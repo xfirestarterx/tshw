@@ -1,3 +1,4 @@
+/* eslint-disable no-redeclare */
 enum Category {
   JavaScript,
   HTML,
@@ -27,14 +28,14 @@ const getAllBooks = (): BookArr => {
   return books;
 }
 
-const logFirstAvailable = (books: BookArr) => {
+const logFirstAvailable = (books: BookArr = getAllBooks()) => {
   const firstAvailable = books.find(b => b.available === true);
   console.log(`qty: ${ books.length }, first available: ${ firstAvailable.title }`)
 }
 
 logFirstAvailable(getAllBooks());
 
-const getBookTitlesByCategory = (cat: Category): Array<string> => {
+const getBookTitlesByCategory = (cat: Category = Category.JavaScript): Array<string> => {
   return getAllBooks()
     .filter(({ category }) => category === cat)
     .map(({ title }) => title);
@@ -68,3 +69,88 @@ const calcTotalPages = (): bigint => {
 }
 
 console.log(calcTotalPages())
+
+
+// 03.01
+const createCutomerID = (name: string, id: number): string => `${ name }${ id }`;
+
+const myID = createCutomerID('Ann', 10);
+console.log(myID);
+
+const idGenerator: (name: string, id: number) => string = createCutomerID;
+
+console.log(idGenerator('Ann2', 20));
+
+
+// 03.02
+const createCustomer = (name: string, age?: number, city?: string) => {
+  console.log(`${ name } ${ age ?? '' } ${ city ?? '' }`);
+}
+
+createCustomer('Ann');
+createCustomer('Ann', 20);
+createCustomer('Ann', 20, 'Beirut');
+
+getBookTitlesByCategory();
+
+logFirstAvailable();
+
+const getBookByID = (id: number): Book => getAllBooks().find(b => b.id === id);
+
+console.log(getBookByID(1));
+
+const checkoutBooks = (customer: string, ...bookIDs: Array<number>): Array<string> => {
+  console.log(customer);
+  const res = [];
+  bookIDs.forEach(id => res.push(getBookByID(id).title));
+  return res;
+}
+
+const myBooks = checkoutBooks('Ann', 1, 2, 4);
+console.log(myBooks);
+
+
+// 03.03
+function getTitles(author: string): Array<string>;
+function getTitles(available: boolean): Array<string>;
+function getTitles(id: number, available: boolean): Array<string>;
+function getTitles(...args: Array<any>): Array<string> {
+  const books = getAllBooks();
+
+  if (args.length > 1) {
+    const [ id, available ] = args;
+    return books.filter(b => b.id === id && b.available == available)
+    .map(b => b.title);
+  }
+
+  if (typeof args[0] === 'string') {
+    return books
+      .filter(b => b.author === args[0])
+      .map(b => b.title);
+  } else if (typeof args[0] === 'boolean') {
+    return books
+      .filter(b => b.available === args[0])
+      .map(b => b.title);
+  }
+}
+
+const checkedOutBooks = getTitles(false);
+console.log(checkedOutBooks);
+
+
+// 03.04
+function assertStringValue (val: any): asserts val is string {
+  if (typeof val !== 'string') {
+    throw new Error('value shoud have been a string');
+  }
+}
+
+const bookTitleTransform = (title: any) => {
+  assertStringValue(title);
+
+  return [...title].reverse().join('');
+}
+
+console.log(bookTitleTransform('Refactoring JavaScript'));
+
+console.log(bookTitleTransform(1));

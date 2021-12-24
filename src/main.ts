@@ -7,15 +7,37 @@ enum Category {
   Angular
 }
 
-type Book = {
+interface IPerson {
+  name: string
+  email: string
+}
+
+interface IAuthor extends IPerson {
+  numBooksPublished: number
+}
+
+interface ILibrarian extends IPerson {
+  department: string
+  assistCustomer(custName: string) : void
+}
+
+interface IDamageLogger {
+  (reason: string): void
+}
+
+interface IBook {
   id: number
   title: string
   author: string
   available: boolean
   category: Category
+  pages?: number
+  markDamaged?: IDamageLogger;
 }
 
-type BookArr = ReadonlyArray<Book>;
+type BookProperties = keyof IBook;
+
+type BookArr = ReadonlyArray<IBook>;
 
 const getAllBooks = (): BookArr => {
   const books: BookArr = <const>[
@@ -95,7 +117,7 @@ getBookTitlesByCategory();
 
 logFirstAvailable();
 
-const getBookByID = (id: number): Book => getAllBooks().find(b => b.id === id);
+const getBookByID = (id: number): IBook | undefined=> getAllBooks().find(b => b.id === id);
 
 console.log(getBookByID(1));
 
@@ -153,4 +175,78 @@ const bookTitleTransform = (title: any) => {
 
 console.log(bookTitleTransform('Refactoring JavaScript'));
 
-console.log(bookTitleTransform(1));
+// console.log(bookTitleTransform(1));
+
+
+// 04.01
+const printBook = (book: IBook) => console.log(`${ book.title } ${ book.author }`);
+
+const myBook: IBook = {
+  id: 5,
+  title: 'Colors, Backgrounds, and Gradients',
+  author: 'Eric A. Meyer',
+  available: true,
+  category: Category.CSS,
+  pages: 200,
+  markDamaged: (reason: string) => console.log(`Damaged: ${ reason }`)
+}
+
+printBook(myBook);
+
+myBook.markDamaged('missing back cover');
+
+
+// 04.02
+const logDamage: IDamageLogger = (reason: string) => {
+  console.log(`Damaged: ${ reason }`)
+}
+
+logDamage('some reason');
+
+// 04.03
+const favoriteAuthor: IAuthor = {
+  email: 'author email',
+  name: 'author name',
+  numBooksPublished: 5
+}
+
+const favoriteLibrarian: ILibrarian = {
+  department: 'librarian dept',
+  email: 'librarian email',
+  name: 'librarian name',
+  assistCustomer: (custName: string) => {
+    console.log(custName);
+  }
+}
+
+
+// 04.04
+const offer: any = {
+  book: {
+    title: 'Essential TypeScript'
+  }
+}
+
+console.log(
+  offer.magazine,
+  offer.magazine?.getTitle?.(),
+  offer.book?.getTitle?.(),
+  offer.book?.authors?.[0]
+);
+
+
+// 04.05
+const getProperty = (book: IBook, propName: BookProperties | 'isbn'): any => {
+  const res = book[propName];
+  if (res instanceof Function) {
+    return propName;
+  }
+  
+  return res;
+}
+
+console.log(getProperty(myBook, 'title'));
+
+console.log(getProperty(myBook, 'markDamaged'));
+
+console.log(getProperty(myBook, 'isbn'));

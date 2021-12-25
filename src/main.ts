@@ -35,6 +35,10 @@ interface IBook {
   markDamaged?: IDamageLogger;
 }
 
+type PersonBook = IPerson & IBook;
+
+type BookOrUndefined = IBook | undefined;
+
 type BookProperties = keyof IBook;
 
 type BookArr = ReadonlyArray<IBook>;
@@ -117,7 +121,7 @@ getBookTitlesByCategory();
 
 logFirstAvailable();
 
-const getBookByID = (id: number): IBook | undefined=> getAllBooks().find(b => b.id === id);
+const getBookByID = (id: number): BookOrUndefined => getAllBooks().find(b => b.id === id);
 
 console.log(getBookByID(1));
 
@@ -250,3 +254,88 @@ console.log(getProperty(myBook, 'title'));
 console.log(getProperty(myBook, 'markDamaged'));
 
 console.log(getProperty(myBook, 'isbn'));
+
+
+// 05.01
+abstract class ReferenceItem {
+  // title: string;
+  // year: number;
+  private _publisher: string;
+  #id: number;
+  static dept = 'some dept';
+
+  constructor(public title: string, protected year: number, id: number)
+  {
+    this.#id = id;
+  }
+
+  get publisher() {
+    return this._publisher.toUpperCase();
+  }
+
+  set publisher(val: string) {
+    this._publisher = val;
+  }
+
+  printItem() {
+    console.log(`${ this.title } was published in ${ this.year } year, department is ${ ReferenceItem.dept }`);
+  }
+
+  getID() {
+    return this.#id;
+  }
+
+  abstract printCitation(): void;
+}
+
+// const ref = new ReferenceItem('some title', 2021, 1);
+// ref.publisher = 'some publisher';
+// console.log(ref.publisher);
+// console.log(ref, ref.getID());
+
+
+// 05.02
+class Encyclopedia extends ReferenceItem {
+  constructor(title: string, year: number, id: number, public edition: number) {
+    super(title, year, id);
+  }
+
+  printItem() {
+    super.printItem();
+    console.log(`edition: ${ this.edition } (${ this.year })`);
+  }
+
+  printCitation() {
+    console.log(`${ this.title } - ${ this.year }`);
+  }
+}
+
+const refBook = new Encyclopedia('enc title', 2020, 2, 3);
+refBook.printItem();
+refBook.printCitation();
+
+// 05.04
+class UniversityLibrarian implements ILibrarian {
+  constructor (public department: string, public name: string, public email: string) {}
+
+  assistCustomer(custName: string) {
+    console.log(`${ this.name } assists ${ custName }`);
+  }
+}
+
+const favoriteLibrarian2: ILibrarian = new UniversityLibrarian('some dept', 'some name', 'some email');
+favoriteLibrarian2.assistCustomer('cust name');
+
+// 05.05
+const personBook: PersonBook = {
+  author: 'person book author',
+  available: true,
+  category: Category.Angular,
+  email: 'person book email',
+  id: 1,
+  name: 'person book name',
+  title: 'person book title',
+}
+
+console.log(personBook);
+

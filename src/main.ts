@@ -17,12 +17,15 @@ import {
   logDamage,
   logFirstAvailable,
   printBook,
-  printRefBook
+  printRefBook,
+  purge
 } from './functions';
-import { IAuthor, IBook, ILibrarian } from './interfaces';
-import { PersonBook } from './types';
+import { IAuthor, IBook, ILibrarian, IMagazine } from './interfaces';
+import { PersonBook, UpdatedBook } from './types';
 import RefBook from './classes/encyclopedia';
+import { Shelf } from './classes';
 import type { Library } from './classes';
+import { BookRequiredFields, СreateCustomerFunctionType } from './types';
 
 const flag = true;
 // not sure, but it seems that parcel doesn't support TLA currently
@@ -160,5 +163,50 @@ const lib: Library = {
   name: 'lib name'
 }
 
-console.log(lib)
+console.log(lib);
 
+const inventory = [
+  { id: 10, title: 'The C Programming Language', author: 'K & R', available: true, category: Category.Software },
+  { id: 11, title: 'Code Complete', author: 'Steve McConnell', available: true, category: Category.Software },
+  { id: 12, title: '8-Bit Graphics with Cobol', author: 'A. B.', available: true, category: Category.Software },
+  { id: 13, title: 'Cool autoexec.bat Scripts!', author: 'C. D.', available: true, category: Category.Software }
+  ];
+
+// console.log(purge(inventory));
+// console.log(purge([1,2,3]))
+
+const bookShelf = new Shelf(inventory);
+console.log(bookShelf.getFirst().title);
+
+const magazines: Array<IMagazine> = [
+  { title: 'Programming Language Monthly', publisher: 'Code Mags' },
+  { title: 'Literary Fiction Quarterly', publisher: 'College Press' },
+  { title: 'Five Points', publisher: 'GSU' }
+  ];
+
+const magazineShelf = new Shelf(magazines);
+console.log(magazineShelf.getFirst().title);
+magazineShelf.printTitles();
+
+const fivePoints = magazineShelf.find('Five Points');
+console.log(fivePoints)
+
+console.log(getProperty(getAllBooks()[0], 'title'));
+
+const b: BookRequiredFields = {
+  author: 'b author',
+  available: true,
+  category: Category.TypeScript,
+  id: 1,
+  markDamaged: () => {},
+  pages: 200,
+  title: 'b title'
+}
+
+const u: UpdatedBook = {
+  title: 'u title'
+}
+
+const params: Parameters<СreateCustomerFunctionType> = ['cust name'];
+
+createCustomer(...params);

@@ -123,7 +123,7 @@ export const logDamage: ILogger = (reason: string) => {
   console.log(`Damaged: ${ reason }`)
 }
 
-export const getProperty = (book: IBook, propName: BookProperties | 'isbn'): any => {
+export const getProperty = <TObject, TKey extends keyof TObject>(book: IBook, propName: BookProperties | 'isbn'): TObject[TKey] | string => {
   const res = book[propName];
   if (res instanceof Function) {
     return propName;
@@ -131,3 +131,5 @@ export const getProperty = (book: IBook, propName: BookProperties | 'isbn'): any
   
   return res;
 }
+
+export const purge = <T>(arr: Array<T>): Array<T> => arr.splice(2);

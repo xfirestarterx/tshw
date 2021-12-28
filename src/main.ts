@@ -26,6 +26,7 @@ import RefBook from './classes/encyclopedia';
 import { Shelf } from './classes';
 import type { Library } from './classes';
 import { BookRequiredFields, СreateCustomerFunctionType } from './types';
+import Encyclopedia from './classes/encyclopedia';
 
 const flag = true;
 // not sure, but it seems that parcel doesn't support TLA currently
@@ -210,3 +211,19 @@ const u: UpdatedBook = {
 const params: Parameters<СreateCustomerFunctionType> = ['cust name'];
 
 createCustomer(...params);
+
+const u2 = new UniversityLibrarian('dept', 'name', 'email');
+
+// const fLibrarian = new UniversityLibrarian('dept', 'anna', 'email');
+// fLibrarian.printLibrarian();
+
+const u3 = new UniversityLibrarian('dept', 'name', 'email');
+
+console.log(u3)
+// u3.assistCustomer('name');
+u3.name = 'Boris';
+u3.assistCustomer('anna');
+
+const e = new Encyclopedia('title', 2000, 2, 2);
+// e.copies = -1;
+e.copies = 100;

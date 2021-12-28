@@ -1,4 +1,7 @@
-export abstract class ReferenceItem {
+import { timeout } from "../decorators";
+
+// parcel unable to compile abstract class with mehtod decorator
+export class ReferenceItem {
   // title: string;
   // year: number;
   private _publisher: string;
@@ -18,6 +21,7 @@ export abstract class ReferenceItem {
     this._publisher = val;
   }
 
+  // @timeout(5000)
   printItem() {
     console.log(`${ this.title } was published in ${ this.year } year, department is ${ ReferenceItem.dept }`);
   }
@@ -26,5 +30,5 @@ export abstract class ReferenceItem {
     return this.#id;
   }
 
-  abstract printCitation(): void;
+  // printCitation(): void;
 }

@@ -8,20 +8,24 @@ import {
   createCustomer,
   getAllBooks,
   getBookAuthorByIndex,
+  getBookByCategory,
+  getBookByCategoryPromise,
   getBookByID,
   getBookTitlesByCategory,
   getProperty,
   getTitles,
   idGenerator,
   logBookTitles,
+  logCategorySearch,
   logDamage,
   logFirstAvailable,
+  logSearchResults,
   printBook,
   printRefBook,
   purge
 } from './functions';
 import { IAuthor, IBook, ILibrarian, IMagazine } from './interfaces';
-import { PersonBook, UpdatedBook } from './types';
+import { PersonBook, Unpromisify, UpdatedBook } from './types';
 import RefBook from './classes/encyclopedia';
 import { Shelf } from './classes';
 import type { Library } from './classes';
@@ -75,7 +79,7 @@ const myBook: IBook = {
   available: true,
   category: Category.CSS,
   pages: 200,
-  markDamaged: (reason: string) => console.log(`Damaged: ${ reason }`)
+  markDamaged: (reason: string) => console.log(`Damaged: ${reason}`)
 }
 
 printBook(myBook);
@@ -171,7 +175,7 @@ const inventory = [
   { id: 11, title: 'Code Complete', author: 'Steve McConnell', available: true, category: Category.Software },
   { id: 12, title: '8-Bit Graphics with Cobol', author: 'A. B.', available: true, category: Category.Software },
   { id: 13, title: 'Cool autoexec.bat Scripts!', author: 'C. D.', available: true, category: Category.Software }
-  ];
+];
 
 // console.log(purge(inventory));
 // console.log(purge([1,2,3]))
@@ -183,7 +187,7 @@ const magazines: Array<IMagazine> = [
   { title: 'Programming Language Monthly', publisher: 'Code Mags' },
   { title: 'Literary Fiction Quarterly', publisher: 'College Press' },
   { title: 'Five Points', publisher: 'GSU' }
-  ];
+];
 
 const magazineShelf = new Shelf(magazines);
 console.log(magazineShelf.getFirst().title);
@@ -199,7 +203,7 @@ const b: BookRequiredFields = {
   available: true,
   category: Category.TypeScript,
   id: 1,
-  markDamaged: () => {},
+  markDamaged: () => { },
   pages: 200,
   title: 'b title'
 }
@@ -227,3 +231,28 @@ u3.assistCustomer('anna');
 const e = new Encyclopedia('title', 2000, 2, 2);
 // e.copies = -1;
 e.copies = 100;
+
+// console.log('begin')
+// getBookByCategory(Category.JavaScript, logCategorySearch);
+// getBookByCategory(Category.Software, logCategorySearch);
+// console.log('end')
+
+// const fn1 = (titles) => {
+//   console.log(titles);
+//   return Promise.resolve(titles.length);
+// }
+
+// console.log('begin')
+// getBookByCategoryPromise(Category.JavaScript)
+//   .then(fn1)
+//   .then((len: Unpromisify<ReturnType<typeof fn1>>) => console.log(len))
+//   .catch(reason => console.log(reason));
+// getBookByCategoryPromise(Category.Software)
+//   .then(titles => console.log(titles))
+//   .catch(reason => console.log(reason));
+// console.log('end')
+
+console.log('begin');
+logSearchResults(Category.JavaScript)
+  .catch(e => console.log(e));
+console.log('end');

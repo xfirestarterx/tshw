@@ -1,6 +1,6 @@
 import { BookArr, BookOrUndefined, BookProperties } from "./types";
 import Category from './enum';
-import { IBook, ILogger } from "./interfaces";
+import { Callback, IBook, ILogger, LibMgrCallback } from "./interfaces";
 import RefBook from './classes/encyclopedia';
 
 export const getAllBooks = (): BookArr => {
@@ -16,7 +16,7 @@ export const getAllBooks = (): BookArr => {
 
 export const logFirstAvailable = (books: BookArr = getAllBooks()) => {
   const firstAvailable = books.find(b => b.available === true);
-  console.log(`qty: ${ books.length }, first available: ${ firstAvailable.title }`)
+  console.log(`qty: ${books.length}, first available: ${firstAvailable.title}`)
 }
 
 export const getBookTitlesByCategory = (cat: Category = Category.JavaScript): Array<string> => {
@@ -26,7 +26,7 @@ export const getBookTitlesByCategory = (cat: Category = Category.JavaScript): Ar
 }
 
 export const logBookTitles = (titles: Array<string>): void =>
-  console.log(`titles: ${ titles.join(', ') }`);
+  console.log(`titles: ${titles.join(', ')}`);
 
 export const getBookAuthorByIndex = (idx: number): [author: string, title: string] => {
   const book = getAllBooks()[idx];
@@ -48,7 +48,7 @@ export const calcTotalPages = (): bigint => {
   return res;
 }
 
-export const createCutomerID = (name: string, id: number): string => `${ name }${ id }`;
+export const createCutomerID = (name: string, id: number): string => `${name}${id}`;
 
 export const myID = createCutomerID('Ann', 10);
 console.log(myID);
@@ -56,7 +56,7 @@ console.log(myID);
 export const idGenerator: (name: string, id: number) => string = createCutomerID;
 
 export const createCustomer = (name: string, age?: number, city?: string) => {
-  console.log(`${ name } ${ age ?? '' } ${ city ?? '' }`);
+  console.log(`${name} ${age ?? ''} ${city ?? ''}`);
 }
 
 export const getBookByID = (id: number): BookOrUndefined => getAllBooks().find(b => b.id === id);
@@ -75,9 +75,9 @@ export function getTitles(...args: Array<any>): Array<string> {
   const books = getAllBooks();
 
   if (args.length > 1) {
-    const [ id, available ] = args;
+    const [id, available] = args;
     return books.filter(b => b.id === id && b.available == available)
-    .map(b => b.title);
+      .map(b => b.title);
   }
 
   if (typeof args[0] === 'string') {
@@ -91,13 +91,13 @@ export function getTitles(...args: Array<any>): Array<string> {
   }
 }
 
-export function assertStringValue (val: any): asserts val is string {
+export function assertStringValue(val: any): asserts val is string {
   if (typeof val !== 'string') {
     throw new Error('value shoud have been a string');
   }
 }
 
-export function assertRefBookInstance (condition: any): asserts condition {
+export function assertRefBookInstance(condition: any): asserts condition {
   if (!condition) {
     throw new Error('It is not instance of RefBook');
   }
@@ -117,10 +117,10 @@ export const bookTitleTransform = (title: any) => {
   return [...title].reverse().join('');
 }
 
-export const printBook = (book: IBook) => console.log(`${ book.title } ${ book.author }`);
+export const printBook = (book: IBook) => console.log(`${book.title} ${book.author}`);
 
 export const logDamage: ILogger = (reason: string) => {
-  console.log(`Damaged: ${ reason }`)
+  console.log(`Damaged: ${reason}`)
 }
 
 export const getProperty = <TObject, TKey extends keyof TObject>(book: IBook, propName: BookProperties | 'isbn'): TObject[TKey] | string => {
@@ -128,8 +128,52 @@ export const getProperty = <TObject, TKey extends keyof TObject>(book: IBook, pr
   if (res instanceof Function) {
     return propName;
   }
-  
+
   return res;
 }
 
 export const purge = <T>(arr: Array<T>): Array<T> => arr.splice(2);
+
+// export const getBookByCategory = (category: Category, callback: LibMgrCallback) => {
+export const getBookByCategory = (category: Category, callback: Callback<string[]>) => {
+  setTimeout(() => {
+    try {
+      const titles = getBookTitlesByCategory(category);
+
+      if (titles.length > 0) {
+        callback(null, titles);
+      } else {
+        throw new Error('No books found');
+      }
+    } catch (e) {
+      callback(e, null);
+    }
+  }, 2000);
+}
+
+export const logCategorySearch = (e: Error | null, titles: Array<string> | null) => {
+  if (e) {
+    console.log(e.message);
+  } else {
+    console.log(titles);
+  }
+}
+
+export const getBookByCategoryPromise = (category: Category): Promise<string[]> => {
+  return new Promise<string[]>((resolve, reject) => {
+    setTimeout(() => {
+        const titles = getBookTitlesByCategory(category);
+
+        if (titles.length > 0) {
+          resolve(titles);
+        } else {
+          reject('No books found');
+        }
+    }, 2000);
+  });
+}
+
+export const logSearchResults = async (category: Category) => {
+  const res = await getBookByCategoryPromise(category);
+  console.log(res.length);
+}

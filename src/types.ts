@@ -1,4 +1,4 @@
-import { createCustomer } from './functions';
+import { createCustomer, getBookByCategoryPromise } from './functions';
 import { IBook, IPerson } from './interfaces';
 
 type PersonBook = IPerson & IBook;
@@ -27,6 +27,12 @@ type P1 = Param1<fn>;
 type P2 = Param2<fn>;
 type P3 = Param3<fn>;
 
+type Unpromisify<T> = T extends Promise<infer R> ? R: never;
+
+type p = ReturnType<typeof getBookByCategoryPromise>;
+
+type dataType = Unpromisify<p>;
+
 export {
   PersonBook,
   BookOrUndefined,
@@ -35,5 +41,8 @@ export {
   BookRequiredFields,
   UpdatedBook,
   AuthorWoEmail,
-  СreateCustomerFunctionType
+  СreateCustomerFunctionType,
+  Unpromisify,
+  p,
+  dataType
 }

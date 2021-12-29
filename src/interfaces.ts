@@ -37,6 +37,14 @@ interface IShelfItem {
   title: string
 }
 
+interface LibMgrCallback {
+  (err: Error | null, titles: Array<string> | null): void
+}
+
+interface Callback<T> {
+  (err: Error, title: T): void;
+}
+
 export {
   IBook,
   IDamageLogger as ILogger,
@@ -44,5 +52,7 @@ export {
   IAuthor,
   ILibrarian,
   IMagazine,
-  IShelfItem
+  IShelfItem,
+  LibMgrCallback,
+  Callback
 }
